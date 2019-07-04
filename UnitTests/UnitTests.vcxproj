@@ -45,8 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CudaMock.cpp" />
+    <ClCompile Include="DeviceVectorTest.cpp" />
     <ClCompile Include="MemoryModel.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="HostVectorTest.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
