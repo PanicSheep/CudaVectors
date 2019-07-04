@@ -5,8 +5,15 @@
 
 static MemoryModel cuda_memory_model;
 
-enum cudaError_t;
-enum cudaMemcpyKind;
+enum cudaError_t { cudaSuccess };
+
+enum cudaMemcpyKind
+{
+	cudaMemcpyHostToHost = 0,
+	cudaMemcpyHostToDevice = 1,
+	cudaMemcpyDeviceToHost = 2,
+	cudaMemcpyDeviceToDevice = 3
+};
 
 cudaError_t cudaMallocHost(void** ptr, std::size_t size);
 cudaError_t cudaFreeHost(void* ptr);

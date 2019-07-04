@@ -1,16 +1,6 @@
 #include "pch.h"
 #include "CudaMock.h"
 
-enum cudaError_t { cudaSuccess };
-
-enum cudaMemcpyKind
-{
-	cudaMemcpyHostToHost = 0,
-	cudaMemcpyHostToDevice = 1,
-	cudaMemcpyDeviceToHost = 2,
-	cudaMemcpyDeviceToDevice = 3
-};
-
 cudaError_t cudaMallocHost(void** ptr, std::size_t size)
 {
 	*ptr = cuda_memory_model.MallocHost(size);
