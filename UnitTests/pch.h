@@ -8,10 +8,10 @@
 #include "DeviceVector.cuh"
 #include "HostVector.cuh"
 
-#include <cstdint>
-#include <utility>
-#include <stdexcept>
-#include <vector>
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
+#include <stdexcept>
+#include <type_traits>
+#include <utility>
 #include <vector>
