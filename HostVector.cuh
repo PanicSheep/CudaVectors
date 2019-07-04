@@ -11,6 +11,8 @@ class HostVector
 	T* m_vec = nullptr;
 	std::size_t m_size = 0;
 	std::size_t m_capacity = 0;
+
+	void grow();
 public:
 	HostVector() = default;
 	__host__ explicit HostVector(std::size_t capacity);
@@ -77,6 +79,17 @@ __host__ inline void swap(HostVector<T>& lhs, HostVector<T>& rhs) noexcept(noexc
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Implementation
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+template<typename T>
+void HostVector<T>::grow()
+{
+	assert(m_size == m_capacity);
+	if (m_size == 0)
+		reserve(1);
+	else
+		reserve(m_size * 2);
+	assert(m_capacity > m_size);
+}
 
 template <typename T>
 __host__ HostVector<T>::HostVector(const std::size_t capacity) : m_capacity(capacity)
@@ -256,7 +269,7 @@ template<typename T>
 __host__ void HostVector<T>::push_back(const T& value)
 {
 	if (m_size >= m_capacity)
-		reserve(m_size * 2);
+		grow();
 	m_vec[m_size++] = value;
 }
 
@@ -264,7 +277,7 @@ template<typename T>
 __host__ void HostVector<T>::push_back(T&& value)
 {
 	if (m_size >= m_capacity)
-		reserve(m_size * 2);
+		grow();
 	m_vec[m_size++] = std::move(value);
 }
 
