@@ -33,6 +33,9 @@ public:
 
 	__host__ std::vector<T> load() const;
 
+	__host__ bool operator==(const HostVector<T>&) const noexcept;
+	__host__ bool operator!=(const HostVector<T>&) const noexcept;
+
 	__host__       T& operator[](std::size_t pos)       noexcept { return m_vec[pos]; }
 	__host__ const T& operator[](std::size_t pos) const noexcept { return m_vec[pos]; }
 	__host__       T& at(std::size_t pos)       noexcept(false);
@@ -208,6 +211,18 @@ template<typename T>
 __host__ std::vector<T> HostVector<T>::load() const
 {
 	return { begin(), end() };
+}
+
+template<typename T>
+__host__ bool HostVector<T>::operator==(const HostVector<T>& o) const noexcept
+{
+	return std::equal(begin(), end(), o.begin(), o.end());
+}
+
+template<typename T>
+__host__ bool HostVector<T>::operator!=(const HostVector<T>& o) const noexcept
+{
+	return !((*this) == o);
 }
 
 template<typename T>
