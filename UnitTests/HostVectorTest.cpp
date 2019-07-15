@@ -29,7 +29,6 @@ TEST_F(HostVector_of_int, is_move_assignable)
 	ASSERT_TRUE(std::is_move_assignable_v<HostVector<int>>);
 }
 
-
 TEST_F(HostVector_of_int, constructing_with_capacity_sets_size_and_capacity)
 {
 	HostVector<int> host{ 5 }; // arbitrary

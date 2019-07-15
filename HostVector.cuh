@@ -15,15 +15,17 @@ class HostVector
 	void grow();
 public:
 	HostVector() = default;
-	__host__ explicit HostVector(std::size_t capacity);
 	__host__ HostVector(const HostVector<T>&, chronosity = syn);
 	__host__ HostVector(HostVector<T>&&) noexcept = default;
-	__host__ HostVector(const std::vector<T>&);
-	__host__ HostVector<T>& operator=(const std::vector<T>&);
 	__host__ HostVector<T>& operator=(const HostVector<T>&);
-	__host__ HostVector<T>& operator=(const host::DeviceVector<T>&);
 	__host__ HostVector<T>& operator=(HostVector<T>&&) noexcept = default;
 	__host__ ~HostVector();
+
+	__host__ explicit HostVector(std::size_t capacity);
+	__host__ HostVector(const std::vector<T>&);
+
+	__host__ HostVector<T>& operator=(const std::vector<T>&);
+	__host__ HostVector<T>& operator=(const host::DeviceVector<T>&);
 
 	__host__ void assign(const std::vector<T>&);
 	__host__ void assign(const HostVector<T>&, chronosity);
