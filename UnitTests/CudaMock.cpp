@@ -13,6 +13,17 @@ cudaError_t cudaFreeHost(void* ptr)
 	return cudaSuccess;
 }
 
+cudaError_t cudaMalloc(void** devPtr, std::size_t size)
+{
+	*devPtr = cuda_memory_model.MallocDevice(size);
+	return cudaSuccess;
+}
+
+cudaError_t cudaFree(void* devPtr)
+{
+	cuda_memory_model.FreeDevice(devPtr);
+	return cudaSuccess;
+}
 
 cudaError_t cudaMemcpy(void* dst, const void* src, std::size_t count, cudaMemcpyKind kind)
 {
