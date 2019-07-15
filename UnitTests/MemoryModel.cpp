@@ -31,21 +31,25 @@ void* MemoryModel::MallocHost(std::size_t size)
 
 void MemoryModel::FreeHost(void* p)
 {
+	const ByteArray::pointer pointer = reinterpret_cast<const ByteArray::pointer>(p);
+
 	const auto it = std::remove_if(host.begin(), host.end(),
-		[p](const auto& arr) { return reinterpret_cast<const void*>(arr.data()) == p; });
+		[pointer](const auto& arr) { return arr.data() == pointer; });
 	host.erase(it, host.end());
 }
 
 void* MemoryModel::MallocDevice(std::size_t size)
 {
 	device.emplace_back(ByteArray(size));
-	return reinterpret_cast<void*>(device.back().data());
+	return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(device.back().data()) + 0x1000000000000000ui64); // so it can't be accessed.
 }
 
 void MemoryModel::FreeDevice(void* p)
 {
+	const ByteArray::pointer pointer = reinterpret_cast<const ByteArray::pointer>(reinterpret_cast<uintptr_t>(p) - 0x1000000000000000ui64); // so it can be accessed.
+
 	const auto it = std::remove_if(device.begin(), device.end(),
-		[p](auto&& arr) { return reinterpret_cast<void*>(arr.data()) == p; });
+		[pointer](auto&& arr) { return arr.data() == pointer; });
 	device.erase(it, device.end());
 }
 
