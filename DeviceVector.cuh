@@ -19,14 +19,16 @@ namespace host
 		std::size_t m_capacity = 0;
 	public:
 		DeviceVector(const DeviceVector<T>&) = delete;
+		DeviceVector(DeviceVector<T>&&) noexcept = default;
 		DeviceVector<T>& operator=(const DeviceVector<T>&) = delete;
+		DeviceVector<T>& operator=(DeviceVector<T>&&) noexcept = default;
+		~DeviceVector() { cudaFree(m_vec); }
 
 		explicit DeviceVector(std::size_t capacity) : m_capacity(capacity) { cudaMalloc(&m_vec, capacity * sizeof(T)); }
-		DeviceVector(DeviceVector<T>&&) noexcept { swap(o); }
+		DeviceVector(const std::vector<T>& o) { store(o); }
+
 		DeviceVector<T>& operator=(const std::vector<T>& o) { store(o); return *this; }
 		DeviceVector<T>& operator=(const HostVector<T>& o) { store(o, syn); return *this; }
-		DeviceVector<T>& operator=(DeviceVector<T>&& o) noexcept { swap(o); return *this; }
-		~DeviceVector() { cudaFree(m_vec); }
 
 		void assign(const std::vector<T>&);
 		void assign(const HostVector<T>&, chronosity);
@@ -36,13 +38,15 @@ namespace host
 		void store(const HostVector<T>&, chronosity);
 		void store(const DeviceVector<T>&);
 
-		T* data()       noexcept { return m_vec; }
+		std::vector<T> load() const;
+
+		      T* data()       noexcept { return m_vec; }
 		const T* data() const noexcept { return m_vec; }
 
-		T* begin()       noexcept { return m_vec; }
+		      T* begin()       noexcept { return m_vec; }
 		const T* begin() const noexcept { return m_vec; }
 		const T* cbegin() const noexcept { return m_vec; }
-		T* end()       noexcept { return m_vec + m_size; }
+		      T* end()       noexcept { return m_vec + m_size; }
 		const T* end() const noexcept { return m_vec + m_size; }
 		const T* cend() const noexcept { return m_vec + m_size; }
 
@@ -53,7 +57,7 @@ namespace host
 
 		void clear() noexcept { m_size = 0; }
 		void resize(std::size_t count) { reserve(count); m_size = count; }
-		void swap(DeviceVector<T>& o) noexcept { ::swap(m_vec, o.m_vec); ::swap(m_size, o.m_size); ::swap(m_capacity, o.m_capacity); }
+		void swap(DeviceVector<T>& o) noexcept { std::swap(m_vec, o.m_vec); std::swap(m_size, o.m_size); std::swap(m_capacity, o.m_capacity); }
 	};
 
 	template <typename T>
@@ -183,6 +187,14 @@ namespace host
 			swap(new_vec);
 		}
 		assign(src);
+	}
+
+	template<typename T>
+	std::vector<T> DeviceVector<T>::load() const
+	{
+		std::vector<T> ret(m_size);
+		cudaMemcpy(ret.data(), m_vec, m_size * sizeof(T), cudaMemcpyDeviceToHost);
+		return ret;
 	}
 
 	template <typename T>
