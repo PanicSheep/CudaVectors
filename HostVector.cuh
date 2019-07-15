@@ -17,12 +17,12 @@ public:
 	HostVector() = default;
 	__host__ explicit HostVector(std::size_t capacity);
 	__host__ HostVector(const HostVector<T>&, chronosity = syn);
-	__host__ HostVector(HostVector<T>&& o) noexcept;
+	__host__ HostVector(HostVector<T>&&) noexcept = default;
 	__host__ HostVector(const std::vector<T>&);
 	__host__ HostVector<T>& operator=(const std::vector<T>&);
 	__host__ HostVector<T>& operator=(const HostVector<T>&);
 	__host__ HostVector<T>& operator=(const host::DeviceVector<T>&);
-	__host__ HostVector<T>& operator=(HostVector<T>&&) noexcept;
+	__host__ HostVector<T>& operator=(HostVector<T>&&) noexcept = default;
 	__host__ ~HostVector();
 
 	__host__ void assign(const std::vector<T>&);
@@ -103,12 +103,6 @@ __host__ HostVector<T>::HostVector(const HostVector<T>& o, chronosity chrono) : 
 	assign(o, chrono);
 }
 
-template <typename T>
-__host__ HostVector<T>::HostVector(HostVector<T>&& o) noexcept
-{
-	swap(o);
-}
-
 template<typename T>
 __host__ HostVector<T>::HostVector(const std::vector<T>& o) : HostVector(o.size())
 {
@@ -133,13 +127,6 @@ template<typename T>
 __host__ HostVector<T>& HostVector<T>::operator=(const host::DeviceVector<T>& o)
 {
 	store(o, syn);
-	return *this;
-}
-
-template<typename T>
-__host__ HostVector<T>& HostVector<T>::operator=(HostVector<T>&& o) noexcept
-{
-	swap(o);
 	return *this;
 }
 
