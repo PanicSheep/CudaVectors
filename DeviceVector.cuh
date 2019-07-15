@@ -18,6 +18,7 @@ namespace host
 		std::size_t m_size = 0;
 		std::size_t m_capacity = 0;
 	public:
+		DeviceVector() = default;
 		DeviceVector(const DeviceVector<T>&) = delete;
 		DeviceVector(DeviceVector<T>&&) noexcept = default;
 		DeviceVector<T>& operator=(const DeviceVector<T>&) = delete;
@@ -39,6 +40,14 @@ namespace host
 		void store(const DeviceVector<T>&);
 
 		std::vector<T> load() const;
+
+		bool operator==(const DeviceVector<T>&) const noexcept = delete; // Too expensive!
+		bool operator!=(const DeviceVector<T>&) const noexcept = delete; // Too expensive!
+
+		      T& operator[](std::size_t pos)       noexcept = delete; // Too expensive!
+		const T& operator[](std::size_t pos) const noexcept = delete; // Too expensive!
+		      T& at(std::size_t pos)       noexcept(false) = delete; // Too expensive!
+		const T& at(std::size_t pos) const noexcept(false) = delete; // Too expensive!
 
 		      T* data()       noexcept { return m_vec; }
 		const T* data() const noexcept { return m_vec; }
