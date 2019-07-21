@@ -97,7 +97,7 @@ namespace host
 
 	TEST_F(DeviceVector_of_int, empty)
 	{
-		const DeviceVector<int> device{ std::vector<int>{} }; // arbitrary
+		const DeviceVector<int> device{ std::vector<int>{} };
 		ASSERT_TRUE(device.empty());
 	}
 
