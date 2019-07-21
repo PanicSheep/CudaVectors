@@ -41,12 +41,12 @@ void MemoryModel::FreeHost(void* p)
 void* MemoryModel::MallocDevice(std::size_t size)
 {
 	device.emplace_back(ByteArray(size));
-	return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(device.back().data()) + 0x1000000000000000ui64); // so it can't be accessed.
+	return reinterpret_cast<void*>(device.back().data());
 }
 
 void MemoryModel::FreeDevice(void* p)
 {
-	const ByteArray::pointer pointer = reinterpret_cast<const ByteArray::pointer>(reinterpret_cast<uintptr_t>(p) - 0x1000000000000000ui64); // so it can be accessed.
+	const ByteArray::pointer pointer = reinterpret_cast<const ByteArray::pointer>(p);
 
 	const auto it = std::remove_if(device.begin(), device.end(),
 		[pointer](auto&& arr) { return arr.data() == pointer; });
