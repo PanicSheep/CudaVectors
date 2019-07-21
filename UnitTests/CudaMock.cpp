@@ -27,12 +27,28 @@ cudaError_t cudaFree(void* devPtr)
 
 cudaError_t cudaMemcpy(void* dst, const void* src, std::size_t count, cudaMemcpyKind kind)
 {
-	return cudaSuccess; // TODO: Implement!
+	switch (kind)
+	{
+	case cudaMemcpyHostToHost:
+		cuda_memory_model.MemcpyHostToHost(src, dst, count);
+		return cudaSuccess;
+	case cudaMemcpyHostToDevice:
+		cuda_memory_model.MemcpyHostToDevice(src, dst, count);
+		return cudaSuccess;
+	case cudaMemcpyDeviceToHost:
+		cuda_memory_model.MemcpyDeviceToHost(src, dst, count);
+		return cudaSuccess;
+	case cudaMemcpyDeviceToDevice:
+		cuda_memory_model.MemcpyDeviceToDevice(src, dst, count);
+		return cudaSuccess;
+	default:
+		return cudaSuccess; // TODO: Implement non-success.
+	}
 }
 
 cudaError_t cudaMemcpyAsync(void* dst, const void* src, std::size_t count, cudaMemcpyKind kind)
 {
-	return cudaSuccess; // TODO: Implement!
+	return cudaMemcpy(dst, src, count, kind);
 }
 
 void CudaMock::SetUp()
