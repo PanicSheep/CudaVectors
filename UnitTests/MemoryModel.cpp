@@ -9,7 +9,11 @@ void MemoryModel::Memcpy(const std::vector<ByteArray>& source_vec, const void* s
 		[source](const auto& arr) { return reinterpret_cast<const void*>(arr.data()) == source; });
 	auto dst = std::find_if(destination_vec.begin(), destination_vec.end(),
 		[destination](const auto& arr) { return reinterpret_cast<const void*>(arr.data()) == destination; });
-	std::copy_n(src->begin(), count, dst->begin());
+
+	if ((src != source_vec.end()) && (dst != destination_vec.end())) // source and destination are within the cuda memory model.
+		std::copy_n(src->begin(), count, dst->begin());
+	else // It's memory not from within the cuda memory model
+		std::copy_n(reinterpret_cast<const uint8_t *>(source), count, reinterpret_cast<uint8_t*>(destination));
 }
 
 void MemoryModel::clear()
