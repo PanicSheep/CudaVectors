@@ -3,55 +3,55 @@
 
 namespace host
 {
-	class DeviceVector_of_int : public CudaMock
+	class DeviceVector_of_int_on_host : public CudaMock
 	{};
 
-	TEST_F(DeviceVector_of_int, is_default_constructible)
+	TEST_F(DeviceVector_of_int_on_host, is_default_constructible)
 	{
 		ASSERT_TRUE(std::is_default_constructible_v<DeviceVector<int>>);
 	}
 
-	TEST_F(DeviceVector_of_int, is_not_copy_constructible)
+	TEST_F(DeviceVector_of_int_on_host, is_not_copy_constructible)
 	{
 		ASSERT_FALSE(std::is_copy_constructible_v<DeviceVector<int>>);
 	}
 
-	TEST_F(DeviceVector_of_int, is_not_copy_assignable)
+	TEST_F(DeviceVector_of_int_on_host, is_not_copy_assignable)
 	{
 		ASSERT_FALSE(std::is_copy_assignable_v<DeviceVector<int>>);
 	}
 
-	TEST_F(DeviceVector_of_int, is_move_constructible)
+	TEST_F(DeviceVector_of_int_on_host, is_move_constructible)
 	{
 		ASSERT_TRUE(std::is_move_constructible_v<DeviceVector<int>>);
 	}
 
-	TEST_F(DeviceVector_of_int, is_move_assignable)
+	TEST_F(DeviceVector_of_int_on_host, is_move_assignable)
 	{
 		ASSERT_TRUE(std::is_move_assignable_v<DeviceVector<int>>);
 	}
 
-	TEST_F(DeviceVector_of_int, constructing_with_capacity_sets_size_and_capacity)
+	TEST_F(DeviceVector_of_int_on_host, constructing_with_capacity_sets_size_and_capacity)
 	{
 		DeviceVector<int> host{ 5 }; // arbitrary
 		ASSERT_EQ(host.size(), 0);
 		ASSERT_EQ(host.capacity(), 5);
 	}
 
-	TEST_F(DeviceVector_of_int, destructor_frees_memory)
+	TEST_F(DeviceVector_of_int_on_host, destructor_frees_memory)
 	{
 		DeviceVector<int> tmp(1);
 		tmp.~DeviceVector();
 	}
 
-	TEST_F(DeviceVector_of_int, constructible_from_std_vector)
+	TEST_F(DeviceVector_of_int_on_host, constructible_from_std_vector)
 	{
 		std::vector<int> vec{ 1,2,3 }; // arbitrary
 		DeviceVector<int> device(vec);
 		ASSERT_EQ(vec, device.load());
 	}
 
-	TEST_F(DeviceVector_of_int, assignable_from_std_vector)
+	TEST_F(DeviceVector_of_int_on_host, assignable_from_std_vector)
 	{
 		std::vector<int> vec{ 1,2,3 }; // arbitrary
 		DeviceVector<int> device;
@@ -59,67 +59,67 @@ namespace host
 		ASSERT_EQ(vec, device.load());
 	}
 	
-	TEST_F(DeviceVector_of_int, begin_points_to_data)
+	TEST_F(DeviceVector_of_int_on_host, begin_points_to_data)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.begin(), device.data());
 	}
 
-	TEST_F(DeviceVector_of_int, begin_points_to_data_when_const)
+	TEST_F(DeviceVector_of_int_on_host, begin_points_to_data_when_const)
 	{
 		const DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.begin(), device.data());
 	}
 
-	TEST_F(DeviceVector_of_int, cbegin_points_to_data)
+	TEST_F(DeviceVector_of_int_on_host, cbegin_points_to_data)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.cbegin(), device.data());
 	}
 
-	TEST_F(DeviceVector_of_int, end_points_to_one_past_back)
+	TEST_F(DeviceVector_of_int_on_host, end_points_to_one_past_back)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.end(), device.begin() + device.size());
 	}
 
-	TEST_F(DeviceVector_of_int, end_points_to_one_past_back_when_const)
+	TEST_F(DeviceVector_of_int_on_host, end_points_to_one_past_back_when_const)
 	{
 		const DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.end(), device.begin() + device.size());
 	}
 
-	TEST_F(DeviceVector_of_int, cend_points_to_one_past_back)
+	TEST_F(DeviceVector_of_int_on_host, cend_points_to_one_past_back)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_EQ(device.cend(), device.begin() + device.size());
 	}
 
-	TEST_F(DeviceVector_of_int, empty)
+	TEST_F(DeviceVector_of_int_on_host, empty)
 	{
 		const DeviceVector<int> device{ std::vector<int>{} };
 		ASSERT_TRUE(device.empty());
 	}
 
-	TEST_F(DeviceVector_of_int, non_empty)
+	TEST_F(DeviceVector_of_int_on_host, non_empty)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_FALSE(device.empty());
 	}
 
-	TEST_F(DeviceVector_of_int, size_is_zero_for_empty)
+	TEST_F(DeviceVector_of_int_on_host, size_is_zero_for_empty)
 	{
 		const DeviceVector<int> device{ std::vector<int>{} }; // arbitrary
 		ASSERT_TRUE(device.empty());
 	}
 
-	TEST_F(DeviceVector_of_int, size_is_non_zero_for_non_empty)
+	TEST_F(DeviceVector_of_int_on_host, size_is_non_zero_for_non_empty)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		ASSERT_FALSE(device.empty());
 	}
 
-	TEST_F(DeviceVector_of_int, reserve_changes_capacity)
+	TEST_F(DeviceVector_of_int_on_host, reserve_changes_capacity)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		const int new_capacity = 100; // arbitrary
@@ -129,7 +129,7 @@ namespace host
 		ASSERT_EQ(device.capacity(), new_capacity);
 	}
 
-	TEST_F(DeviceVector_of_int, reserve_preserves_size)
+	TEST_F(DeviceVector_of_int_on_host, reserve_preserves_size)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		const auto old_size = device.size();
@@ -140,7 +140,7 @@ namespace host
 		ASSERT_EQ(device.size(), old_size);
 	}
 
-	TEST_F(DeviceVector_of_int, clear_preserves_capacity)
+	TEST_F(DeviceVector_of_int_on_host, clear_preserves_capacity)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		const auto old_capacity = device.capacity();
@@ -150,14 +150,14 @@ namespace host
 		ASSERT_EQ(device.capacity(), old_capacity);
 	}
 
-	TEST_F(DeviceVector_of_int, clear_makes_empty)
+	TEST_F(DeviceVector_of_int_on_host, clear_makes_empty)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		device.clear();
 		ASSERT_TRUE(device.empty());
 	}
 
-	TEST_F(DeviceVector_of_int, resize_grows_when_needed)
+	TEST_F(DeviceVector_of_int_on_host, resize_grows_when_needed)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		device.reserve(100); // arbitrary
@@ -170,7 +170,7 @@ namespace host
 		ASSERT_GT(device.capacity(), old_capacity);
 	}
 
-	TEST_F(DeviceVector_of_int, resize_preserves_capacity_when_possible)
+	TEST_F(DeviceVector_of_int_on_host, resize_preserves_capacity_when_possible)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		device.reserve(100); // arbitrary
@@ -181,7 +181,7 @@ namespace host
 		ASSERT_EQ(device.capacity(), old_capacity);
 	}
 
-	TEST_F(DeviceVector_of_int, resize_resets_size)
+	TEST_F(DeviceVector_of_int_on_host, resize_resets_size)
 	{
 		DeviceVector<int> device{ std::vector<int>{ 1,2,3 } }; // arbitrary
 		device.reserve(100); // arbitrary
@@ -193,7 +193,7 @@ namespace host
 		ASSERT_EQ(device.size(), new_size);
 	}
 
-	TEST_F(DeviceVector_of_int, swap_member_function)
+	TEST_F(DeviceVector_of_int_on_host, swap_member_function)
 	{
 		const std::vector<int> vec1{ 1, 2, 3 }; // arbitrary
 		const std::vector<int> vec2{ 4, 5, 6 }; // arbitrary
@@ -206,7 +206,7 @@ namespace host
 		ASSERT_TRUE(device2.load() == vec1);
 	}
 
-	TEST_F(DeviceVector_of_int, swap_free_function)
+	TEST_F(DeviceVector_of_int_on_host, swap_free_function)
 	{
 		const std::vector<int> vec1{ 1, 2, 3 }; // arbitrary
 		const std::vector<int> vec2{ 4, 5, 6 }; // arbitrary
