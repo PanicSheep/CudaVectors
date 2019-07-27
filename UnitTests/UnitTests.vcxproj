@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CudaMock.cpp" />
-    <ClCompile Include="DeviceVectorTest.cpp" />
+    <ClCompile Include="DeviceVectorOnDeviceTest.cpp" />
+    <ClCompile Include="DeviceVectorOnHostTest.cpp" />
     <ClCompile Include="MemoryModel.cpp" />
     <ClCompile Include="HostVectorTest.cpp" />
     <ClCompile Include="pch.cpp">
