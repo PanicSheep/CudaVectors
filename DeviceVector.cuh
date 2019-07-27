@@ -26,6 +26,7 @@ namespace host
 		~DeviceVector() { cudaFree(m_vec); }
 
 		explicit DeviceVector(std::size_t capacity) : m_capacity(capacity) { cudaMalloc(&m_vec, capacity * sizeof(T)); }
+		DeviceVector(const HostVector<T>& o) : m_size(o.size()), m_capacity(o.capacity()) { assign(o); }
 		DeviceVector(const std::vector<T>& o) { store(o); }
 
 		DeviceVector<T>& operator=(const std::vector<T>& o) { store(o); return *this; }
@@ -78,6 +79,7 @@ namespace host
 
 namespace device
 {
+	// Fixed memory vector
 	template <typename T>
 	class DeviceVector
 	{
@@ -85,10 +87,15 @@ namespace device
 		std::size_t m_size = 0;
 		std::size_t m_capacity = 0;
 	public:
-		__device__ DeviceVector(T* begin, std::size_t size) : m_vec(begin), m_size(size) {}
-		DeviceVector(const DeviceVector<T>& o) = default;
-		DeviceVector(host::DeviceVector<T>& o) : m_vec(o.data()), m_size(o.size()), m_capacity(o.capacity()) {}
+		DeviceVector() = delete;
+		DeviceVector(const DeviceVector<T>&) = default;
+		DeviceVector(DeviceVector<T>&&) noexcept = default;
 		DeviceVector<T>& operator=(const DeviceVector<T>&) = default;
+		DeviceVector<T>& operator=(DeviceVector<T>&&) noexcept = default;
+		~DeviceVector() = default;
+
+		DeviceVector(host::DeviceVector<T>& o) : m_vec(o.data()), m_size(o.size()), m_capacity(o.capacity()) {}
+		DeviceVector(host::DeviceVector<T>&&) = delete;
 
 		__device__       T& operator[](std::size_t pos)       noexcept { return m_vec[pos]; }
 		__device__ const T& operator[](std::size_t pos) const noexcept { return m_vec[pos]; }
@@ -98,6 +105,8 @@ namespace device
 		__device__ const T& front() const noexcept { return m_vec[0]; }
 		__device__       T& back()       noexcept { return m_vec[m_size - 1]; }
 		__device__ const T& back() const noexcept { return m_vec[m_size - 1]; }
+		__device__       T* data()       noexcept { return m_vec; }
+		__device__ const T* data() const noexcept { return m_vec; }
 
 		__device__       T* begin()       noexcept { return m_vec; }
 		__device__ const T* begin() const noexcept { return m_vec; }
@@ -114,7 +123,7 @@ namespace device
 		__device__ void push_back(const T&);
 		__device__ void push_back(T&&);
 		__device__ void pop_back() { m_size--; }
-		__device__ void swap(DeviceVector<T>& o) noexcept { ::swap(m_vec, o.m_vec); ::swap(m_size, o.m_size); ::swap(m_capacity, o.m_capacity); }
+		__device__ void swap(DeviceVector<T>& o) noexcept { std::swap(m_vec, o.m_vec); std::swap(m_size, o.m_size); std::swap(m_capacity, o.m_capacity); }
 	};
 
 	template <typename T>
