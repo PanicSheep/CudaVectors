@@ -202,13 +202,13 @@ TEST_F(HostVector_of_int, non_empty)
 TEST_F(HostVector_of_int, size_is_zero_for_empty)
 {
 	const HostVector<int> host{ std::vector<int>{} }; // arbitrary
-	ASSERT_TRUE(host.empty());
+	ASSERT_EQ(host.size(), 0);
 }
 
 TEST_F(HostVector_of_int, size_is_non_zero_for_non_empty)
 {
 	HostVector<int> host{ std::vector<int>{ 1,2,3 } }; // arbitrary
-	ASSERT_FALSE(host.empty());
+	ASSERT_NE(host.size(), 0);
 }
 
 TEST_F(HostVector_of_int, reserve_changes_capacity)
@@ -270,23 +270,23 @@ TEST_F(HostVector_of_int, push_back_uses_capacity)
 
 TEST_F(HostVector_of_int, push_back_xvalue_grows_automatically)
 {
-	struct vec { double x, y, z; };
-	HostVector<vec> host;
+	struct point { double x, y, z; };
+	HostVector<point> host;
 
 	for (int i = 0; i < 100; i++) // aribtrary
-		host.push_back(std::move(vec()));
+		host.push_back(std::move(point()));
 
 	ASSERT_FALSE(host.empty());
 }
 
 TEST_F(HostVector_of_int, push_back_xvalue_uses_capacity)
 {
+	struct point { double x, y, z; };
 	const std::size_t capacity = 100; // aribtrary
-	struct vec { double x, y, z; };
-	HostVector<vec> host(capacity);
+	HostVector<point> host(capacity);
 
 	for (int i = 0; i < capacity; i++)
-		host.push_back(std::move(vec()));
+		host.push_back(std::move(point()));
 
 	ASSERT_EQ(host.capacity(), capacity);
 }
